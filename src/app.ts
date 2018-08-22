@@ -7,12 +7,14 @@ import lusca from "lusca";
 import dotenv from "dotenv";
 import mongo from "connect-mongo";
 import flash from "express-flash";
+import graphqlHTTP from "express-graphql";
 import path from "path";
 import mongoose from "mongoose";
 import passport from "passport";
 import expressValidator from "express-validator";
 import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
+import { userSchema } from "./graphql/index";
 
 const MongoStore = mongo(session);
 
@@ -88,9 +90,21 @@ app.use(
 );
 
 /**
+ * GraphQL endpoint
+ */
+
+app.use("/graphql", graphqlHTTP({
+  schema: userSchema,
+  rootValue: global,
+  graphiql: true
+}));
+
+
+/**
  * Primary app routes.
  */
 app.get("/", homeController.index);
+app.get("/test", (req, res) => res.json({ msg: "Welcome to the tadpolls REST API endpoint" }));
 app.get("/login", userController.getLogin);
 app.post("/login", userController.postLogin);
 app.get("/logout", userController.logout);
