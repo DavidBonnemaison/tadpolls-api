@@ -1,21 +1,19 @@
-const { GraphQLObjectType, GraphQLList } = require("graphql");
-const UserModel = require("../../models/User");
-const { userType } = require("../types/user");
-
+const { GraphQLObjectType, GraphQLList } = require('graphql');
+const { User } = require('../../models/User');
+const { userType } = require('../types/user');
 
 export const queryType = new GraphQLObjectType({
-  name: "Query",
+  name: 'UserQuery',
   fields: () => ({
     users: {
       type: new GraphQLList(userType),
       resolve: () => {
-        const users = UserModel.find().exec();
-         if (!users) {
-           throw new Error("Error");
-         }
-         return users;
+        const users = User.find().exec();
+        if (!users) {
+          throw new Error('Error');
+        }
+        return users;
       }
     }
   })
 });
-
